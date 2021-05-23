@@ -1,13 +1,25 @@
 package parser
 
 import (
-	"imooc.com/joizhang/learn-golang/crawler/types"
-	"imooc.com/joizhang/learn-golang/crawler/zhenai/model"
+	"learn-golang/crawler/types"
+	"learn-golang/crawler/zhenai/model"
 	"regexp"
 	"strconv"
 )
 
-var ageRe = regexp.MustCompile(`<td><span class="label">年龄：</span>([\d]+)岁</td>`)
+var ageRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([\d]+)岁</div>`)
+var heightRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([\d]+)cm</div>`)
+var weightRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([\d]+)kg</div>`)
+var incomeRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>月收入:([^<]+)</div>`)
+var genderRe = regexp.MustCompile(`<a href="http:\/\/www\.zhenai\.com/zhenghun/.*([^<]士)征婚</a>`)
+var xinzuoRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([^<]+座[^<]+)</div>`)
+var marriageRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([^<]+)</div>`)
+var educationRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([^<]+)</div></div>`)
+var occupationRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c>([^<]+)</div><div class="m-btn purple" data-v-8b1eac0c>[^<]+</div></div>`)
+var hokouRe = regexp.MustCompile(`<div class="m-btn pink" data-v-8b1eac0c>籍贯:([^<]+)</div>`)
+var houseRe = regexp.MustCompile(`<div class="m-btn pink" data-v-8b1eac0c>([^<]*房[^<]*)</div>`)
+var carRe = regexp.MustCompile(`<div class="m-btn pink" data-v-8b1eac0c>([^<]*车[^<]*)</div>`)
+/*var ageRe = regexp.MustCompile(`<td><span class="label">年龄：</span>([\d]+)岁</td>`)
 var heightRe = regexp.MustCompile(`<td><span class="label">身高：</span>([\d]+)CM</td>`)
 var weightRe = regexp.MustCompile(`<td><span class="label">体重：</span><span field="">([\d]+)KG</span></td>`)
 var incomeRe = regexp.MustCompile(`<td><span class="label">月收入：</span>([^<]+)</td>`)
@@ -18,7 +30,7 @@ var educationRe = regexp.MustCompile(`<td><span class="label">学历：</span>([
 var occupationRe = regexp.MustCompile(`<td><span class="label">职业： </span>([^<]+)</td>`)
 var hokouRe = regexp.MustCompile(`<td><span class="label">籍贯：</span>([^<]+)</td>`)
 var houseRe = regexp.MustCompile(`<td><span class="label">住房条件：</span><span field="">([^<]+)</span></td>`)
-var carRe = regexp.MustCompile(`<td><span class="label">是否购车：</span><span field="">([^<]+)</span></td>`)
+var carRe = regexp.MustCompile(`<td><span class="label">是否购车：</span><span field="">([^<]+)</span></td>`)*/
 
 // 获取用户的详细资料
 func ParseProfile(contents []byte, name string) types.ParseResult {

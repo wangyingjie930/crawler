@@ -1,8 +1,8 @@
 package engine
 
 import (
-	"imooc.com/joizhang/learn-golang/crawler/scheduler"
-	"imooc.com/joizhang/learn-golang/crawler/types"
+	"learn-golang/crawler/scheduler"
+	"learn-golang/crawler/types"
 	"log"
 )
 
@@ -13,10 +13,11 @@ type ConcurrentEngine struct {
 
 // 并发版
 func (e *ConcurrentEngine) Run(seeds ...types.Request) {
-	out := make(chan types.ParseResult)
-	e.Scheduler.Run()
+	out := make(chan types.ParseResult) //数据结果通道
+	e.Scheduler.Run()//执行任务调度,
 
 	for i := 0; i < e.WorkerCount; i++ {
+		//创建多个work, work从调度器的request通道获得数据, 向result通道发送信息
 		e.createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
 	}
 
@@ -24,14 +25,16 @@ func (e *ConcurrentEngine) Run(seeds ...types.Request) {
 		if isDuplicate(r.Url) {
 			continue
 		}
+		//向请求通道提交request
 		e.Scheduler.Submit(r)
 	}
 
 	itemCount := 0
 	for {
+		//result通道有数据过来了
 		result := <-out
 		for _, item := range result.Items {
-			log.Printf("Got item #%d: %v", itemCount, item)
+			log.Printf("Got item #%d: %+v", itemCount, item)
 			itemCount++
 		}
 
@@ -54,6 +57,7 @@ func isDuplicate(url string) bool {
 	visitedUrl[url] = true
 	return false
 }
+
 
 func (ConcurrentEngine) createWorker(in chan types.Request, out chan types.ParseResult, ready scheduler.ReadyNotifier) {
 	go func() {

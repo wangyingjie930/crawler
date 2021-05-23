@@ -1,18 +1,19 @@
 package parser
 
 import (
+	"fmt"
 	"io/ioutil"
-	"learn-golang/crawler/zhenai/model"
 	"testing"
 )
 
-func TestParseProfile(t *testing.T) {
-	contents, err := ioutil.ReadFile("profile_test_data.html")
+func TestParseProfileByUrl(t *testing.T) {
+	contents, err := ioutil.ReadFile("profile_test_data_1.html")
 	if err != nil {
 		panic(err)
 	}
 	result := ParseProfile(contents, "惠儿")
-	if len(result.Items) != 1 {
+	fmt.Printf("%+v", result)
+	/*if len(result.Items) != 1 {
 		t.Errorf("Items should contain 1 element; but was %v", result.Items)
 	}
 
@@ -34,5 +35,5 @@ func TestParseProfile(t *testing.T) {
 	}
 	if profile != expected {
 		t.Errorf("expected %v, but was %v", expected, profile)
-	}
+	}*/
 }
