@@ -2,12 +2,12 @@ package types
 
 type Request struct {
 	Url       string
-	ParseFunc func([]byte) ParseResult
+	ParseFunc ParseFunc
 }
 
 type ParseResult struct {
 	Requests []Request
-	Items    []interface{}
+	Items    []Item
 }
 
 func NilParser([]byte) ParseResult {
@@ -20,3 +20,5 @@ type Item struct {
 	Id      string
 	Payload interface{}
 }
+
+type ParseFunc func(content []byte, url string) ParseResult

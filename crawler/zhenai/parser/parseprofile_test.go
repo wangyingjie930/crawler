@@ -11,7 +11,7 @@ func TestParseProfileByUrl(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	result := ParseProfile(contents, "惠儿")
+	result := ParseProfile(contents, "http://album.zhenai.com/u/1914537659", "惠儿")
 	fmt.Printf("%+v", result)
 	/*if len(result.Items) != 1 {
 		t.Errorf("Items should contain 1 element; but was %v", result.Items)

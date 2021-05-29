@@ -11,12 +11,12 @@ func TestParseProfile(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	result := ParseProfile(contents, "惠儿")
+	result := ParseProfile(contents, "http://album.zhenai.com/u/1914537659", "惠儿")
 	if len(result.Items) != 1 {
 		t.Errorf("Items should contain 1 element; but was %v", result.Items)
 	}
 
-	profile := result.Items[0].(model.Profile)
+	profile := result.Items[0].Payload.(model.Profile)
 	expected := model.Profile{
 		Name:       "惠儿",
 		Age:        50,

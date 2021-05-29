@@ -9,6 +9,7 @@ import (
 type ConcurrentEngine struct {
 	Scheduler   scheduler.Scheduler
 	WorkerCount int
+	ItemChan chan types.Item
 }
 
 // 并发版
@@ -36,6 +37,7 @@ func (e *ConcurrentEngine) Run(seeds ...types.Request) {
 		for _, item := range result.Items {
 			log.Printf("Got item #%d: %+v", itemCount, item)
 			itemCount++
+			e.ItemChan <- item
 		}
 
 		for _, request := range result.Requests {

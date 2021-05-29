@@ -30,7 +30,7 @@ func (s SimpleSample) Run (seed ...types.Request) {
 		//第一次返回: requests: [{url: 城市链接, parseFunc: ParseCityUserList}], items: []
 		//第二次返回: requests: [{url: 用户链接, parseFunc: ParseProfile}], items: []
 		//第三次返回: requests: [], items: [......]
-		parseResult := request.ParseFunc(res)
+		parseResult := request.ParseFunc(res, request.Url)
 		log.Printf("解析结果: %+v", parseResult)
 		for _, item := range parseResult.Items {
 			fmt.Printf("print item %+v \n", item)

@@ -3,6 +3,7 @@ package parser
 import (
 	"learn-golang/crawler/types"
 	"learn-golang/crawler/zhenai/model"
+	"log"
 	"regexp"
 	"strconv"
 )
@@ -19,6 +20,7 @@ var occupationRe = regexp.MustCompile(`<div class="m-btn purple" data-v-8b1eac0c
 var hokouRe = regexp.MustCompile(`<div class="m-btn pink" data-v-8b1eac0c>籍贯:([^<]+)</div>`)
 var houseRe = regexp.MustCompile(`<div class="m-btn pink" data-v-8b1eac0c>([^<]*房[^<]*)</div>`)
 var carRe = regexp.MustCompile(`<div class="m-btn pink" data-v-8b1eac0c>([^<]*车[^<]*)</div>`)
+var id = regexp.MustCompile(`http://album.zhenai.com/u/([\d]+)`)
 /*var ageRe = regexp.MustCompile(`<td><span class="label">年龄：</span>([\d]+)岁</td>`)
 var heightRe = regexp.MustCompile(`<td><span class="label">身高：</span>([\d]+)CM</td>`)
 var weightRe = regexp.MustCompile(`<td><span class="label">体重：</span><span field="">([\d]+)KG</span></td>`)
@@ -33,7 +35,8 @@ var houseRe = regexp.MustCompile(`<td><span class="label">住房条件：</span>
 var carRe = regexp.MustCompile(`<td><span class="label">是否购车：</span><span field="">([^<]+)</span></td>`)*/
 
 // 获取用户的详细资料
-func ParseProfile(contents []byte, name string) types.ParseResult {
+func ParseProfile(contents []byte, url string, name string) types.ParseResult {
+	log.Print(url)
 	profile := model.Profile{}
 	profile.Name = name
 	age, err := strconv.Atoi(extractString(contents, ageRe))
@@ -64,7 +67,14 @@ func ParseProfile(contents []byte, name string) types.ParseResult {
 	profile.Car = extractString(contents, carRe)
 
 	result := types.ParseResult{
-		Items: []interface{}{profile},
+		Items: []types.Item{
+			{
+				Url: url,
+				Id: extractString([]byte(url), id),
+				Type: "zhenai",
+				Payload: profile,
+			},
+		},
 	}
 	return result
 }
