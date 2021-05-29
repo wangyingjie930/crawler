@@ -1,15 +1,16 @@
 package main
 
 import (
+	"learn-golang/crawler-distribute/persist/client"
 	"learn-golang/crawler/engine"
-	"learn-golang/crawler/persist"
 	"learn-golang/crawler/scheduler"
 	"learn-golang/crawler/types"
 	"learn-golang/crawler/zhenai/parser"
 )
 
 func main() {
-	itemChan := persist.ItemServer("dating_profile")
+	//itemChan := persist.ItemServer("dating_profile")
+	itemChan := client.ItemSaver(":1234")
 
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},

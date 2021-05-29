@@ -22,13 +22,16 @@ func ItemServer(index string) chan types.Item {
 			item := <-out
 			log.Printf("Got item #%d: %+v", itemCount, item)
 			itemCount++
-			save(client, index, item)
+			err := Save(client, index, item)
+			if err != nil {
+				log.Print("save error")
+			}
 		}
 	}()
 	return out
 }
 
-func save(client *elastic.Client, index string, item types.Item) {
+func Save(client *elastic.Client, index string, item types.Item) error {
 	indexService := client.Index().
 		Index(index).
 		Type(item.Type).
@@ -38,8 +41,8 @@ func save(client *elastic.Client, index string, item types.Item) {
 	}
 	resp, err := indexService.Do(context.Background())
 	if err != nil {
-		panic(err)
+		return err
 	}
-
 	fmt.Printf("%+v", resp)
+	return nil
 }
