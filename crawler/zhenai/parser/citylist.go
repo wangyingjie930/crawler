@@ -17,7 +17,7 @@ func ParseCityList(contents []byte, _ string) types.ParseResult {
 		count ++
 		result.Requests = append(
 			result.Requests,
-			types.Request{Url: string(m[1]), ParseFunc: ParseCityUserList})
+			types.Request{Url: string(m[1]), Parser: types.NewFuncParser(ParseCityUserList, "ParseCityUserList")})
 		if count > 10 {
 			break
 		}

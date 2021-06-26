@@ -87,3 +87,22 @@ func extractString(contents []byte, re *regexp.Regexp) string {
 		return ""
 	}
 }
+
+type ProfileParser struct {
+	userName string
+}
+
+func (p *ProfileParser) Serialize() (name string, args interface{}) {
+	return "ProfileParser", p.userName
+}
+
+func (p *ProfileParser) Parse(content []byte, url string) types.ParseResult {
+	return ParseProfile(content, url, p.userName)
+}
+
+func NewProfileParser(name string) types.Parser {
+	return &ProfileParser{
+		userName: name,
+	}
+}
+

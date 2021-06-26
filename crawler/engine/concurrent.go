@@ -10,16 +10,19 @@ type ConcurrentEngine struct {
 	Scheduler   scheduler.Scheduler
 	WorkerCount int
 	ItemChan chan types.Item
+	RequestProcessor Processor
 }
 
-// 并发版
-func (e *ConcurrentEngine) Run(seeds ...types.Request) {
-	out := make(chan types.ParseResult) //数据结果通道
-	e.Scheduler.Run()//执行任务调度,
+type Processor func (r types.Request) (types.ParseResult, error)
 
-	for i := 0; i < e.WorkerCount; i++ {
+// 并发版
+func (c *ConcurrentEngine) Run(seeds ...types.Request) {
+	out := make(chan types.ParseResult) //数据结果通道
+	c.Scheduler.Run()                   //执行任务调度,
+
+	for i := 0; i < c.WorkerCount; i++ {
 		//创建多个work, work从调度器的request通道获得数据, 向result通道发送信息
-		e.createWorker(e.Scheduler.WorkerChan(), out, e.Scheduler)
+		c.createWorker(c.Scheduler.WorkerChan(), out, c.Scheduler)
 	}
 
 	for _, r := range seeds {
@@ -27,7 +30,7 @@ func (e *ConcurrentEngine) Run(seeds ...types.Request) {
 			continue
 		}
 		//向请求通道提交request
-		e.Scheduler.Submit(r)
+		c.Scheduler.Submit(r)
 	}
 
 	itemCount := 0
@@ -37,14 +40,14 @@ func (e *ConcurrentEngine) Run(seeds ...types.Request) {
 		for _, item := range result.Items {
 			log.Printf("Got item #%d: %+v", itemCount, item)
 			itemCount++
-			e.ItemChan <- item
+			c.ItemChan <- item
 		}
 
 		for _, request := range result.Requests {
 			if isDuplicate(request.Url) {
 				continue
 			}
-			e.Scheduler.Submit(request)
+			c.Scheduler.Submit(request)
 		}
 	}
 }
@@ -61,13 +64,13 @@ func isDuplicate(url string) bool {
 }
 
 
-func (ConcurrentEngine) createWorker(in chan types.Request, out chan types.ParseResult, ready scheduler.ReadyNotifier) {
+func (c ConcurrentEngine) createWorker(in chan types.Request, out chan types.ParseResult, ready scheduler.ReadyNotifier) {
 	go func() {
 		for {
 			// Tell scheduler I am ready
 			ready.WorkerReady(in)
 			request := <-in
-			result, err := worker(request)
+			result, err := c.RequestProcessor(request)
 			if err != nil {
 				continue
 			}

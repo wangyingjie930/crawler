@@ -18,7 +18,7 @@ func ParseCityUserList(contents []byte, _ string) types.ParseResult {
 			result.Requests,
 			types.Request{
 				Url: url,
-				ParseFunc: ProfileParse(name),
+				Parser: NewProfileParser(name),
 			})
 	}
 
@@ -29,15 +29,9 @@ func ParseCityUserList(contents []byte, _ string) types.ParseResult {
 			result.Requests,
 			types.Request{
 				Url:       string(m[1]),
-				ParseFunc: ParseCityList,
+				Parser: types.NewFuncParser(ParseCityList, "ParseCityList"),
 			})
 	}
 
 	return result
-}
-
-func ProfileParse(name string) types.ParseFunc {
-	return func(bytes []byte, url string) types.ParseResult {
-		return ParseProfile(bytes, url, name)
-	}
 }

@@ -41,7 +41,7 @@ func (e *ConcurrentSimpleEngine) createWork(in chan types.Request, out chan type
 	go func() {
 		for {
 			request := <- in
-			parseResult, err := worker(request)
+			parseResult, err := Worker(request)
 			if err != nil {
 				continue
 			}

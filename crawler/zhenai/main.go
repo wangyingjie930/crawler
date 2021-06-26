@@ -17,9 +17,10 @@ func main() {
 		//Scheduler: &scheduler.SimpleScheduler{},
 		WorkerCount: 10,
 		ItemChan: itemChan,
+		RequestProcessor: engine.Worker,
 	}
 	e.Run(types.Request{
 		Url:       "http://www.zhenai.com/zhenghun",
-		ParseFunc: parser.ParseCityList,
+		Parser: types.NewFuncParser(parser.ParseCityList, "ParseCityList"),
 	})
 }
